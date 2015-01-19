@@ -1,0 +1,33 @@
+#!/usr/bin/expect
+source [file join [file dirname [info script]] synclib.tcl]
+#----------------------------------------------------------------------------------------
+# Functions: 
+#   Sync dir or files from {local} to {remote}
+#   sync_dir 	{name} {rsync-options} {local-dir} {remote-dir} [excluding-patterns ...]
+#   sync_file 	{name} {rsync-options} {local-dir} {remote-dir} [target-files ...]
+#
+#   Reverse-sync dir or files from {remote} to {local}
+#   rsync_dir 	{name} {rsync-options} {local-dir} {remote-dir} [excluding-patterns ...]
+#   rsync_file 	{name} {rsync-options} {local-dir} {remote-dir} [target-files ...]
+#
+# Example:
+#   sync_dir "dir" "" "$env(HOME)/sources/shell" "tmp" 
+#   sync_file "file" "" "$env(HOME)/sources/shell" "tmp" "sync.tcl" "synclib.tcl"
+#   rsync_dir "dir" "" "$env(HOME)/sources/shell" "tmp" 
+#   rsync_file "file" "" "$env(HOME)/sources/shell" "tmp" "sync.tcl" "synclib.tcl"
+#----------------------------------------------------------------------------------------
+set rsync_option "-v "
+set hosts {
+	{ admin@192.168.1.10 22 admin }
+}
+set named_hosts {
+	{ file {
+		{ james@192.168.1.10 22 james }
+		{ admin@192.168.1.10 22 admin }
+	}}
+}
+
+sync_dir 	"dir" "--delete" "$env(HOME)/Pictures" "~/" 
+sync_file 	"file" "" "$env(HOME)/Documents" "~/Documents" "a.txt" "b.txt"
+#rsync_dir 	"dir" "" "--copy-links" "$env(HOME)/sources/shell" "~/users/emusal"
+#rsync_file 	"file" "" "" "$env(HOME)/sources/shell" "tmp" "sync.tcl" "synclib.tcl"
