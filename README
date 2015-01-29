@@ -1,0 +1,156 @@
+This is the README file for emusal's Sync tool
+
+Sync is to synchronize certain directories and files to or from remote.
+
+Report bugs and issues at emusal@gmail.com
+
+License: GPLv2
+
+You can get the sources to the latest development version from the git 
+repository:
+
+git clone git://github.com/emusal/sync.git
+
+
+Basic Usage:
+============
+$ ./sync
+  or
+$ ./sync bin  <-- 'bin' is rule name.
+
+
+Variables:
+==========
+rsync_option    default 'rsync' option. this value is commonly applied to 
+                all sync rules. For more detail information about this option, 
+                please refer to 'man rsync'
+
+hosts           remote host list to be synchroized
+
+                Format:  
+
+                {
+                   { [user@][ip-address] [port] [password] }
+                     ...
+                }
+
+                Example:
+
+                set hosts = {
+                    { app@192.168.1.100 22 app.123 }
+                    { bin@localhost 22 bin.123 }
+                }
+
+named_hosts     special host list for named rule.
+
+                Format:  
+
+                {
+                    { [name] {
+                        { [user@][ip-address] [port] [password] }
+                        ...
+                    }}
+                }
+
+                Example: the files or directory, named 'file', is copied
+                         to both, 'james@xxx' and 'admin@xxx" hosts.
+
+                set named_hosts {
+                    { file {
+                        { james@192.168.1.10 22 james }
+                        { admin@192.168.1.10 22 admin }
+                    }}
+                }
+
+
+Functions:
+==========
+sync_dir     synchronizing a local directory to remote
+
+             Arguments:
+
+             {name}            rule name. name is reusable between other rules
+             {rsync-options}   additional 'rsync' options only for this rule
+             {local-dir}       target directory (local)
+             {remote-dir}      destination directory (remote)
+             [excluding-patterns] ...
+                               excludining pattern. format is exactly same with
+                               --exclude option of 'rsync'
+
+             Example:
+
+             sync_dir "bin" "--copy-links" "env($HOME)/bin" "~/" "*.bkup"
+
+sync_file    synchronizing local specific files to remote
+
+             Arguments:
+
+             {name}            rule name. name is reusable between other rules
+             {rsync-options}   additional 'rsync' options only for this rule
+             {local-dir}       target directory (local)
+             {remote-dir}      destination directory (remote)
+             [target-files ..] target file list to be synchronized. 
+
+             Example: 'a.txt', 'b.txt' is copied into remote directory "~/."
+
+             sync_file "file" "" "$env(HOME)/" "~/" "a.txt" "b.txt"
+
+rsync_dir    reverse synchronizing a remote directory to local. 
+             sub directories are recursively synced. and exclude pattern is 
+             recursively applied for sub directories. 
+
+             Arguments:
+
+             {name}            rule name. name is reusable between other rules
+             {rsync-options}   additional 'rsync' options only for this rule
+             {local-dir}       destination directory (local)
+             {remote-dir}      target directory (remote)
+             [excluding-patterns ..]
+                               excludining pattern. format is exactly same with
+                               --exclude option of 'rsync'
+             Example:
+
+             rsync_dir "bin" "--copy-links" "env($HOME)/bin" "~/" "*.bkup"
+
+rsync_file   reverse synchronizing remote specific files to local
+
+             Arguments:
+
+             {name}            rule name. name is reusable between other rules
+             {rsync-options}   additional 'rsync' options only for this rule
+             {local-dir}       destination directory (local)
+             {remote-dir}      target directory (remote)
+             [target-files ..] target file list to be synchronized. 
+
+             Example: 'a.txt', 'b.txt' is copied into local directory "~/."
+
+             rsync_file "file" "" "$env(HOME)/" "~/" "a.txt" "b.txt"
+
+Files:
+======
+.include.sync 
+.include.sync.{name}  
+
+             including rule file for overall or specific named rule.
+             it is same with '--include-from' option of 'rsync'. 
+             '.include.sync.{name}' is applied for named rule. 
+             if both files are exist, named file is prior to overall file.
+
+             Example: only a.out file is copied
+                    
+             + bin
+             + bin/a.out
+             - *
+
+.exclude.sync
+.exclude.sync.{name}
+
+             excluding rule file for overall or specific named rule.
+             it is same with '--exclude-from' option of 'rsync'. 
+             '.exclude.sync.{name}' is applied for named rule. 
+             if both files are exist, named file is prior to overall file.
+
+             Example: a.out, b.out files are excluded from sync list
+                    
+             a.out
+             b.out
