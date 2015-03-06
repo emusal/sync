@@ -29,5 +29,5 @@ set named_hosts {
 
 sync_dir 	"dir" "--delete" "$env(HOME)/Pictures" "~/" 
 sync_file 	"file" "" "$env(HOME)/Documents" "~/Documents" "a.txt" "b.txt"
-#rsync_dir 	"dir" "" "--copy-links" "$env(HOME)/sources/shell" "~/users/emusal"
-#rsync_file 	"file" "" "" "$env(HOME)/sources/shell" "tmp" "sync.tcl" "synclib.tcl"
+#rsync_dir 	"dir" "--copy-links" "$env(HOME)/sources/shell" "~/users/emusal"
+#rsync_file 	"file" "" "$env(HOME)/sources/shell" "tmp" "sync.tcl" "synclib.tcl"

@@ -5,6 +5,7 @@ set hosts			{}
 set named_hosts		{}
 set prompt			{[][$|\\#><%]{1,}($| $)}
 set rsync_option 	""
+set timeout			600000
 
 proc sync { reverse name opt src dst { exc "" } } {
 	global prompt
@@ -84,10 +85,10 @@ proc _sync_dir { reverse name opt src dst args } {
 	}
 }
 proc sync_dir { name opt src dst args } {
-	_sync_dir 0 $name $opt $src $dst $args
+	_sync_dir 0 $name $opt $src $dst {*}$args
 }
 proc rsync_dir { name opt src dst args } {
-	_sync_dir 1 $name $opt $src $dst $args
+	_sync_dir 1 $name $opt $src $dst {*}$args
 }
 proc sync_file { name opt src dst args } {
 	global argc, argv
