@@ -18,6 +18,12 @@ $ ./sync
   or
 $ ./sync bin  <-- 'bin' is rule name.
 
+Files:
+============
+README          this file.
+sync            executable main script.
+synctest        sync test. This shell run 'rsync' with '--dry-run' option.
+synclib.tcl     common library.
 
 Variables:
 ==========
