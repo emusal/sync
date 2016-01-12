@@ -85,10 +85,10 @@ proc _sync_dir { reverse name opt src dst args } {
 	}
 }
 proc sync_dir { name opt src dst args } {
-	_sync_dir 0 $name $opt $src $dst {*}$args
+	eval _sync_dir 0 $name $opt $src $dst $args
 }
 proc rsync_dir { name opt src dst args } {
-	_sync_dir 1 $name $opt $src $dst {*}$args
+	eval _sync_dir 1 $name $opt $src $dst $args
 }
 proc sync_file { name opt src dst args } {
 	global argc, argv
@@ -108,7 +108,7 @@ proc rsync_file { name opt src dst args } {
 		set f [open $tmpfile w+]
 		foreach arg $args { puts $f $arg }
 		close $f
-		sync 1 $name $opt $src $dst $files
+		eval sync 1 $name $opt $src $dst $files
 		exec rm $tmpfile
 	}
 }
